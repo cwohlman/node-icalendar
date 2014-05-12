@@ -1,3 +1,26 @@
+iCalendar for Events
+==================
+
+We've added some code to generate events from the iCal.
+
+Once these features are implemented we should be able to parse iCal data and recieve an array of events:
+
+ 1. Each event consisting of 
+        { 
+            year: 2014
+            , month: 11
+            , day: 29
+            , start: 700 // 24hour time int, ie 0 through 2359
+            , end: 1100
+            , uid: "ASDFASDFASDF" //unique id for the event (recuring events share this id)
+            , rid: "ASDFASDFASDF" //unique id for the recurance ()
+        }
+ 2. An event for each day, and for each recurrenct. ie.
+ a multi day event will create an entry for each day,
+ a recuring event will create an entry for each occurence, or 
+ if multi day, for every day on which the event would exist.
+
+
 iCalendar for Node
 ==================
 
