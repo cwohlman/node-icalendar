@@ -98,6 +98,25 @@ describe("RRule", function() {
                 ]);
     });
 
+    it("throws on unreasonable number of occurences specified", function () {
+        var rrule = new RRule(
+          'FREQ=MONTHLY;BYDAY=3MO;UNTIL=20130318',
+          new Date(2013,2,18),
+          new Date(2013,2,18)
+       );
+        expect(function () {rrule.nextOccurences(new Date(2013,2,1), 10000);}).toThrow("Argument out of range, did you mean to specify 10000+ occurences?");
+    });
+
+    it("throws on invalid count_or_until argument", function () {
+        var rrule = new RRule(
+          'FREQ=MONTHLY;BYDAY=3MO;UNTIL=20130318',
+          new Date(2013,2,18),
+          new Date(2013,2,18)
+       );
+        expect(function () {rrule.nextOccurences(new Date(2013,2,1), "a");}).toThrow("Invalid argument, please specify a date or number.");
+        expect(function () {rrule.nextOccurences(new Date(2013,2,1), {});}).toThrow("Invalid argument, please specify a date or number.");
+    });
+
     it("respects EXDATE date_only parts", function() {
         var rrule = new RRule('FREQ=MONTHLY', {
             DTSTART: new Date(2011,0,1),
@@ -332,7 +351,5 @@ describe("RRule", function() {
                 .toEqual(new Date(2012,5,2,17,0));
         });
     });
-
-// TODO: test that rrule limits next occurences to a reasonable number, eg less than 10k
 });
 
