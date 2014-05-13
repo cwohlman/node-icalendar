@@ -332,5 +332,7 @@ describe("RRule", function() {
                 .toEqual(new Date(2012,5,2,17,0));
         });
     });
+
+// TODO: test that rrule limits next occurences to a reasonable number, eg less than 10k
 });
 

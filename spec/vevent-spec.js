@@ -138,15 +138,47 @@ describe('VEvent objects', function() {
             'UID:testuid@someotherplace.com\r\n'+
             'DTSTART:20110101T100000Z\r\n'+
             'DTEND:20110101T200000Z\r\n'+
+            'SUMMARY:Some Event\r\n'+
+            'DESCRIPTION:Something will happen\r\n'+
             'END:VEVENT\r\n'+
             'END:VCALENDAR\r\n');
         var ev = cal.events()[0];
-        var rv = ev.getReservations();
-        expect(rv.start).toBe(1000);
-        expect(rv.end).toBe(2000);
-        expect(rv.year).toBe(2011);
-        expect(rv.month).toBe(1);
-        expect(rv.date).toBe(1);
-    })
+        var rv = ev.getReservations()[0];
+        expect(rv.start.valueOf()).toBe(new Date("2011-01-01T10:00:00Z").valueOf());
+        expect(rv.end.valueOf()).toBe(new Date("2011-01-01T20:00:00Z").valueOf());
+        expect(rv.summary).toBe("Some Event");
+        expect(rv.description).toBe("Something will happen");
+    });
+
+    it('correctly returns reservations from multiple events', function () {
+        var cal = icalendar.parse_calendar(
+            'BEGIN:VCALENDAR\r\n'+
+            'PRODID:-//Bobs Software Emporium//NONSGML Bobs Calendar//EN\r\n'+
+            'VERSION:2.0\r\n'+
+            'BEGIN:VEVENT\r\n'+
+            'DTSTAMP:20111202T165900\r\n'+
+            'UID:testuid@someotherplace.com\r\n'+
+            'DTSTART:20110101T100000Z\r\n'+
+            'DTEND:20110101T200000Z\r\n'+
+            'RRULE:FREQ=MONTHLY\r\n'+
+            'SUMMARY:Some Event\r\n'+
+            'DESCRIPTION:Something will happen\r\n'+
+            'END:VEVENT\r\n'+
+            'END:VCALENDAR\r\n');
+        var ev = cal.events()[0];
+        var rvs = ev.getReservations(new Date("2011-01-01T00:00:00Z"));
+        var rv = rvs[0];
+        expect(rv.start.valueOf()).toBe(new Date("2011-01-01T10:00:00Z").valueOf());
+        expect(rv.end.valueOf()).toBe(new Date("2011-01-01T20:00:00Z").valueOf());
+        expect(rv.summary).toBe("Some Event");
+        expect(rv.description).toBe("Something will happen");
+        expect(rv.uid).toBe("testuid@someotherplace.com");
+        var rv = rvs[1];
+        expect(rv.start.valueOf()).toBe(new Date("2011-02-01T10:00:00Z").valueOf());
+        expect(rv.end.valueOf()).toBe(new Date("2011-02-01T20:00:00Z").valueOf());
+        expect(rv.summary).toBe("Some Event");
+        expect(rv.description).toBe("Something will happen");
+        expect(rv.uid).toBe("testuid@someotherplace.com");
+    });
 });
 
