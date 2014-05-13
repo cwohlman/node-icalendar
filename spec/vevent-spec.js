@@ -128,6 +128,49 @@ describe('VEvent objects', function() {
                 ]);
     });
 
+    describe('correctly returns start, end and duration', function () {
+        it('correctly handles identical start, end dates', function () {
+            var cal = icalendar.parse_calendar(
+                "BEGIN:VCALENDAR\r\n" + 
+                "VERSION:2.0\r\n" +
+                "PRODID:-//Tri Tech Computers//node-icalendar//EN\r\n" +
+                "BEGIN:VEVENT\r\n" +
+                "DTSTART:20110307T060050Z\r\n" +
+                "DTEND:20110307T060050Z\r\n" +
+                "DTSTAMP:20140512T164104Z\r\n" +
+                "UID:598B8BECDF9646BA9A23D1177C06B7ED00000000000000000000000000000000\r\n" +
+                "STATUS:CONFIRMED\r\n" +
+                "SUMMARY:Reminder\r\n" +
+                "END:VEVENT\r\n" +
+                "END:VCALENDAR\r\n" +
+                "");
+            var ev = cal.events()[0];
+            expect(ev.start()).toEqual(new Date("2011-03-07T06:00:50Z"));
+            expect(ev.end()).toEqual(new Date("2011-03-07T06:00:50Z"));
+            expect(ev.duration()).toEqual(0);
+        });
+        it('correctly handles duration without dtend', function () {
+            var cal = icalendar.parse_calendar(
+                "BEGIN:VCALENDAR\r\n" + 
+                "VERSION:2.0\r\n" +
+                "PRODID:-//Tri Tech Computers//node-icalendar//EN\r\n" +
+                "BEGIN:VEVENT\r\n" +
+                "DTSTART:20110307T060050Z\r\n" +
+                "DURATION:PT1H\r\n" +
+                "DTSTAMP:20140512T164104Z\r\n" +
+                "UID:598B8BECDF9646BA9A23D1177C06B7ED00000000000000000000000000000000\r\n" +
+                "STATUS:CONFIRMED\r\n" +
+                "SUMMARY:Reminder\r\n" +
+                "END:VEVENT\r\n" +
+                "END:VCALENDAR\r\n" +
+                "");
+            var ev = cal.events()[0];
+            expect(ev.start()).toEqual(new Date("2011-03-07T06:00:50Z"));
+            expect(ev.end()).toEqual(new Date("2011-03-07T07:00:50Z"));
+            expect(ev.duration()).toEqual(3600000);
+        });
+    });
+
     it('correctly returns reservations from events', function () {
         var cal = icalendar.parse_calendar(
             'BEGIN:VCALENDAR\r\n'+

@@ -6,3 +6,7 @@ node_modules
 .grunt
 .idea
 
+
+spec/basic.ics
+
+spec/basic-spec.js

@@ -94,4 +94,6 @@ describe("iCalendar API", function () {
 			expect(reservations.length).toBe(13); // Note default reservations duration is 1 year
 		});
 	})
+
+	// TODO: calendar.events, event.start, event.end, event.rrule, event.getReservations, etc.
 })
