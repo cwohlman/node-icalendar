@@ -321,6 +321,38 @@ describe("RRule", function() {
                   .toEqual(new Date(2012,0,24,12,30,45));
         });
 
+        it("handles weekly recurrence with interval, count and byday", function () {
+            var rrule = new RRule('FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU'
+                  , new Date(1997, 07, 05, 09, 00, 00))
+            expect(rrule.nextOccurences(10)).toEqual([
+                    new Date(1997, 07, 05, 09, 00, 00),
+                    new Date(1997, 07, 10, 09, 00, 00),
+                    new Date(1997, 07, 19, 09, 00, 00),
+                    new Date(1997, 07, 24, 09, 00, 00)
+                ]);
+        });
+
+        it("handles weekly recurrence with interval and count", function () {
+            var rrule = new RRule('FREQ=WEEKLY;INTERVAL=2;COUNT=4'
+                , new Date(1997, 07, 05, 09, 00, 00))
+            expect(rrule.nextOccurences(10)).toEqual([
+                    new Date(1997, 07, 05, 09, 00, 00),
+                    new Date(1997, 07, 19, 09, 00, 00),
+                    new Date(1997, 08, 02, 09, 00, 00),
+                    new Date(1997, 08, 16, 09, 00, 00)
+                ]);
+        });
+        it("handles weekly recurrence with WKST", function () {
+            var rrule = new RRule('FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=SU'
+                , new Date(1997, 07, 05, 09, 00, 00))
+            expect(rrule.nextOccurences(10)).toEqual([
+                    new Date(1997, 07, 05, 09, 00, 00),
+                    new Date(1997, 07, 17, 09, 00, 00),
+                    new Date(1997, 07, 19, 09, 00, 00),
+                    new Date(1997, 07, 31, 09, 00, 00)
+                ]);
+        });
+
     });
 
     describe("daily recurrence", function() {
