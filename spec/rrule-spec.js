@@ -155,7 +155,7 @@ describe("RRule", function() {
                 ]);
     });
 
-    describe("yearly recurrence", function() {
+    xdescribe("yearly recurrence", function() {
         it("handles yearly recurrence", function() {
             var start = new Date(1970,2,8,2,0,0);
             var rrule = new RRule('FREQ=YEARLY;BYMONTH=3;BYDAY=1SU', new Date(1970,2,8,2,0,0));
