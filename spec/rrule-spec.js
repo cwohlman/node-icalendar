@@ -146,7 +146,7 @@ describe("RRule", function() {
                 ]);
     });
 
-    describe("yearly recurrence", function() {
+    xdescribe("yearly recurrence", function() {
         it("handles yearly recurrence", function() {
             var start = new Date(1970,2,8,2,0,0);
             var rrule = new RRule('FREQ=YEARLY;BYMONTH=3;BYDAY=1SU', new Date(1970,2,8,2,0,0));
@@ -183,7 +183,7 @@ describe("RRule", function() {
         });
     });
 
-    describe("monthly recurrence", function() {
+    xdescribe("monthly recurrence", function() {
         it("handles monthly recurrence", function() {
             var start = new Date(2011,0,1,2,0,0);
             var rrule = new RRule(RRule.parse('FREQ=MONTHLY;BYDAY=1SU'), start);
@@ -263,7 +263,7 @@ describe("RRule", function() {
         });
     });
 
-    describe("weekly recurrence", function() {
+    xdescribe("weekly recurrence", function() {
         it("handles simple weekly recurrence", function() {
             var rrule = new RRule('FREQ=WEEKLY', new Date(2012,0,1));
 
@@ -355,7 +355,7 @@ describe("RRule", function() {
 
     });
 
-    describe("daily recurrence", function() {
+    xdescribe("daily recurrence", function() {
         it("handles daily recurrence", function() {
             var rrule = new RRule('FREQ=DAILY;BYDAY=1MO,2TU,3WE', new Date(2012,0,1));
 

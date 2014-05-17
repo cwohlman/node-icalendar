@@ -3,10 +3,10 @@ var fs = require('fs');
 
 var parse_calendar = require('../lib/parser').parse_calendar;
 
-describe("Timezone parsing", function () {
+xdescribe("Timezone parsing", function () {
 	// This is an edge case,
 	// TODO: write tests for all the other cases
-	describe("Should handle X-WR-TIMEZONE", function () {
+	xdescribe("Should handle X-WR-TIMEZONE", function () {
 		it("Should parse America/Los_Angeles", function () {
 			var cal = parse_calendar(
 				"BEGIN:VCALENDAR\r\n" +
