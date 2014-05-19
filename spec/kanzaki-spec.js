@@ -20,7 +20,7 @@ describe("Should pass all kanzaki.com rrule examples", function () {
           "1997-10-10T09:00:00Z",
           "1997-10-11T09:00:00Z"
         ],
-        false,
+        true,
         "(1997 9:00 AM EDT)October 2-11"
     ],
     [
@@ -88,7 +88,6 @@ describe("Should pass all kanzaki.com rrule examples", function () {
             "1997-11-28T09:00:00Z",
             "1997-11-29T09:00:00Z",
             "1997-11-30T09:00:00Z",
-            "1997-11-31T09:00:00Z",
             "1997-12-01T09:00:00Z",
             "1997-12-02T09:00:00Z",
             "1997-12-03T09:00:00Z",
@@ -630,7 +629,7 @@ describe("Should pass all kanzaki.com rrule examples", function () {
             return new Date(d);
           });
           console.log("oneMore", oneMore);
-          expect(rule.nextOccurences(rule.start, expectedSet.length + oneMore)).toEqual(expectedSet);
+          expect(rule.nextOccurences(null, expectedSet.length + oneMore)).toEqual(expectedSet);
         }
       });
     });
