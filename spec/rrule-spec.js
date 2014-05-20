@@ -336,7 +336,7 @@ describe("RRule", function() {
             expect(rrule.nextOccurences(10)).toEqual([
                     new Date(1997, 07, 05, 09, 00, 00),
                     new Date(1997, 07, 10, 09, 00, 00),
-                    new Date(1997, 07, 19, 09, 00, 00),
+                    new Date(1997, 07, 17, 09, 00, 00),
                     new Date(1997, 07, 24, 09, 00, 00)
                 ]);
         });
