@@ -1,7 +1,7 @@
 
 var icalendar = require('../lib');
 
-xdescribe('VEvent objects', function() {
+describe('VEvent objects', function() {
     it('matches time-ranges on start/end events correctly', function() {
         var vevent = new icalendar.VEvent();
         vevent.addProperty('DTSTART', new Date(2011,11,1,5,0,0));
@@ -128,7 +128,7 @@ xdescribe('VEvent objects', function() {
                 ]);
     });
 
-    xdescribe('correctly returns start, end and duration', function () {
+    describe('correctly returns start, end and duration', function () {
         it('correctly handles identical start, end dates', function () {
             var cal = icalendar.parse_calendar(
                 "BEGIN:VCALENDAR\r\n" + 

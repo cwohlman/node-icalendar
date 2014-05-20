@@ -7,7 +7,7 @@ var icalendar = require('../lib');
 
 // NB: Ported to jasmine from expresso, hence the strange layout
 // TODO: Make this look more like a jasmine spec
-xdescribe("iCalendar", function() {
+describe("iCalendar", function() {
     it('calendar object', function() {
         // assert that we create a valid empty iCal object
         var ics = new icalendar.iCalendar();

@@ -5,7 +5,7 @@ var fs = require('fs');
 
 var parse_calendar = require('../lib/parser').parse_calendar;
 
-xdescribe("iCalendar.parse", function() {
+describe("iCalendar.parse", function() {
     it('parses data correctly', function() {
         var cal = parse_calendar(
             'BEGIN:VCALENDAR\r\n'+

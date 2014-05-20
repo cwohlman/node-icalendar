@@ -1,8 +1,8 @@
 
 var icalendar = require('../lib');
 
-xdescribe("iCalendar API", function () {
-	xdescribe("iCalendar object", function () {
+describe("iCalendar API", function () {
+	describe("iCalendar object", function () {
 		it("Should expose a 'reservations' property", function () {
 			var cal = icalendar.parse_calendar(
 	            'BEGIN:VCALENDAR\r\n'+
