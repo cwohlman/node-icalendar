@@ -1,4 +1,695 @@
 var RRule = require('../lib/rrule').RRule;
+var parse_calendar = require('../lib/parser').parse_calendar;
+describe("Should parse event with and without timezone info", function () {
+	it("Should parse with Google timezone def", function () {
+
+		var ical = 
+		"BEGIN:VCALENDAR\n" +
+		"PRODID:-//Google Inc//Google Calendar 70.9054//EN\n" +
+		"VERSION:2.0\n" +
+		"CALSCALE:GREGORIAN\n" +
+		"METHOD:PUBLISH\n" +
+		"X-WR-CALNAME:test cal for z-adams spec\n" +
+		"X-WR-TIMEZONE:America/Los_Angeles\n" +
+		"BEGIN:VTIMEZONE\n" +
+		"TZID:America/Los_Angeles\n" +
+		"X-LIC-LOCATION:America/Los_Angeles\n" +
+		"BEGIN:DAYLIGHT\n" +
+		"TZOFFSETFROM:-0800\n" +
+		"TZOFFSETTO:-0700\n" +
+		"TZNAME:PDT\n" +
+		"DTSTART:19700308T020000\n" +
+		"RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\n" +
+		"END:DAYLIGHT\n" +
+		"BEGIN:STANDARD\n" +
+		"TZOFFSETFROM:-0700\n" +
+		"TZOFFSETTO:-0800\n" +
+		"TZNAME:PST\n" +
+		"DTSTART:19701101T020000\n" +
+		"RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\n" +
+		"END:STANDARD\n" +
+		"END:VTIMEZONE\n" +
+		"BEGIN:VEVENT\n" +
+		"DTSTART;TZID=America/Los_Angeles:20140125T110000\n" +
+		"DTEND;TZID=America/Los_Angeles:20140125T220000\n" +
+		"RRULE:FREQ=WEEKLY;BYDAY=SA\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140125T110000\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140222T110000\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140329T110000\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140426T110000\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140510T110000\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140524T110000\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140628T110000\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140726T110000\n" +
+		"DTSTAMP:20140520T181309Z\n" +
+		"UID:ii1umeh3l1lequfjnklhnr5uhg@google.com\n" +
+		"CREATED:20140114T025322Z\n" +
+		"DESCRIPTION:\n" +
+		"LAST-MODIFIED:20140515T180009Z\n" +
+		"LOCATION:\n" +
+		"SEQUENCE:0\n" +
+		"STATUS:CONFIRMED\n" +
+		"SUMMARY:Test EventSF\n" +
+		"TRANSP:OPAQUE\n" +
+		"END:VEVENT\n" +
+		"END:VCALENDAR\n" +
+		"";
+		var cal = parse_calendar(ical);
+
+		expect(cal.events()[0].start()).toEqual(new Date("2014-01-25T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-01-25T10:00:00-0800"))).toEqual(new Date("2014-01-25T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-08-23T10:00:00-0700"))).toEqual(new Date("2014-08-23T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-08-23T02:00:00-0800"))).toEqual(new Date("2014-08-23T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-25T02:00:00-0800"))).toEqual(new Date("2014-10-25T11:00:00-0700"));
+	});
+	it("Should parse with Apple timezone def", function () {
+
+		var ical = 
+		"BEGIN:VCALENDAR\r\n" +
+		"VERSION:2.0\r\n" +
+		"X-WR-CALNAME:test cal for z-adams spec\r\n" +
+		"X-APPLE-CALENDAR-COLOR:#882F00FF\r\n" +
+		"BEGIN:VTIMEZONE\r\n" +
+		"TZID:America/Los_Angeles\r\n" +
+		"X-LIC-LOCATION:America/Los_Angeles\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:18831118T120702\r\n" +
+		"RDATE;VALUE=DATE-TIME:18831118T120702\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0752\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19180331T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19190330T100000Z;BYDAY=-1SU;BYMONTH=3\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19181027T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19191026T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19420209T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19420209T020000\r\n" +
+		"TZNAME:PWT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19450814T160000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19450814T160000\r\n" +
+		"TZNAME:PPT\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19450930T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19450930T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19490101T020000\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19460101T000000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19460101T000000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19670101T000000\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19480314T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19480314T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19740106T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19750223T020000\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19500430T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19660424T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19500924T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19610924T090000Z;BYDAY=-1SU;BYMONTH=9\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19621028T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19661030T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19670430T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19730429T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19671029T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=20061029T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19760425T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19860427T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19870405T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=20060402T100000Z;BYDAY=1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:20070311T020000\r\n" +
+		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:20071104T020000\r\n" +
+		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"END:VTIMEZONE\r\n" +
+		"BEGIN:VEVENT\r\n" +
+		"DTEND;TZID=America/Los_Angeles:20140125T220000\r\n" +
+		"UID:ii1umeh3l1lequfjnklhnr5uhg@google.com\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140329T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140628T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140726T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140426T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140222T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140524T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140125T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140510T110000\r\n" +
+		"DTSTAMP:20140520T181309Z\r\n" +
+		"LOCATION:\r\n" +
+		"DESCRIPTION:\r\n" +
+		"STATUS:CONFIRMED\r\n" +
+		"SEQUENCE:0\r\n" +
+		"SUMMARY:Test Event\r\n" +
+		"LAST-MODIFIED:20140515T180009Z\r\n" +
+		"DTSTART;TZID=America/Los_Angeles:20140125T110000\r\n" +
+		"CREATED:20140114T025322Z\r\n" +
+		"RRULE:FREQ=WEEKLY;BYDAY=SA\r\n" +
+		"TRANSP:OPAQUE\r\n" +
+		"END:VEVENT\r\n" +
+		"END:VCALENDAR\n" +
+		"";
+		var cal = parse_calendar(ical);
+
+		expect(cal.events()[0].start()).toEqual(new Date("2014-01-25T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-01-25T10:00:00-0800"))).toEqual(new Date("2014-01-25T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-08-23T10:00:00-0700"))).toEqual(new Date("2014-08-23T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-08-23T02:00:00-0800"))).toEqual(new Date("2014-08-23T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-25T02:00:00-0800"))).toEqual(new Date("2014-10-25T11:00:00-0700"));
+	});
+	it("Should parse with Google timezone def", function () {
+
+		var ical = 
+		"BEGIN:VCALENDAR\n" +
+		"PRODID:-//Google Inc//Google Calendar 70.9054//EN\n" +
+		"VERSION:2.0\n" +
+		"CALSCALE:GREGORIAN\n" +
+		"METHOD:PUBLISH\n" +
+		"X-WR-CALNAME:test cal for z-adams spec\n" +
+		"X-WR-TIMEZONE:America/Los_Angeles\n" +
+		"BEGIN:VTIMEZONE\n" +
+		"TZID:America/Los_Angeles\n" +
+		"X-LIC-LOCATION:America/Los_Angeles\n" +
+		"BEGIN:DAYLIGHT\n" +
+		"TZOFFSETFROM:-0800\n" +
+		"TZOFFSETTO:-0700\n" +
+		"TZNAME:PDT\n" +
+		"DTSTART:19700308T020000\n" +
+		"RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\n" +
+		"END:DAYLIGHT\n" +
+		"BEGIN:STANDARD\n" +
+		"TZOFFSETFROM:-0700\n" +
+		"TZOFFSETTO:-0800\n" +
+		"TZNAME:PST\n" +
+		"DTSTART:19701101T020000\n" +
+		"RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\n" +
+		"END:STANDARD\n" +
+		"END:VTIMEZONE\n" +
+		"BEGIN:VEVENT\r\n" +
+		"DTSTART;TZID=America/Los_Angeles:20140209T110000\r\n" +
+		"DTEND;TZID=America/Los_Angeles:20140209T170000\r\n" +
+		"RRULE:FREQ=WEEKLY;BYDAY=SU\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140518T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140511T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140914T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140629T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140525T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140427T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140309T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140727T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140330T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140223T110000\r\n" +
+		"DTSTAMP:20140520T181309Z\r\n" +
+		"UID:uvqhl71ff9e1dbj32rcv5glubc@google.com\r\n" +
+		"CREATED:20140131T183222Z\r\n" +
+		"DESCRIPTION:\r\n" +
+		"LAST-MODIFIED:20140131T183222Z\r\n" +
+		"LOCATION:\r\n" +
+		"SEQUENCE:0\r\n" +
+		"STATUS:CONFIRMED\r\n" +
+		"SUMMARY:Test Event\r\n" +
+		"TRANSP:OPAQUE\r\n" +
+		"END:VEVENT\r\n" +
+		"END:VCALENDAR\n" +
+		"";
+		var cal = parse_calendar(ical);
+
+		expect(cal.events()[0].start()).toEqual(new Date("2014-02-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-02-09T10:00:00-0800"))).toEqual(new Date("2014-02-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-23T10:00:00-0700"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-26T02:00:00-0800"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+	});
+	it("Should parse with Apple timezone def", function () {
+
+		var ical = 
+		"BEGIN:VCALENDAR\r\n" +
+		"VERSION:2.0\r\n" +
+		"X-WR-CALNAME:test cal for z-adams spec\r\n" +
+		"X-APPLE-CALENDAR-COLOR:#882F00FF\r\n" +
+		"BEGIN:VTIMEZONE\r\n" +
+		"TZID:America/Los_Angeles\r\n" +
+		"X-LIC-LOCATION:America/Los_Angeles\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:18831118T120702\r\n" +
+		"RDATE;VALUE=DATE-TIME:18831118T120702\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0752\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19180331T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19190330T100000Z;BYDAY=-1SU;BYMONTH=3\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19181027T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19191026T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19420209T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19420209T020000\r\n" +
+		"TZNAME:PWT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19450814T160000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19450814T160000\r\n" +
+		"TZNAME:PPT\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19450930T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19450930T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19490101T020000\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19460101T000000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19460101T000000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19670101T000000\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19480314T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19480314T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19740106T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19750223T020000\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19500430T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19660424T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19500924T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19610924T090000Z;BYDAY=-1SU;BYMONTH=9\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19621028T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19661030T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19670430T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19730429T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19671029T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=20061029T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19760425T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19860427T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19870405T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=20060402T100000Z;BYDAY=1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:20070311T020000\r\n" +
+		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:20071104T020000\r\n" +
+		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"END:VTIMEZONE\r\n" +
+		"BEGIN:VEVENT\r\n" +
+		"DTEND;TZID=America/Los_Angeles:20140209T170000\r\n" +
+		"UID:uvqhl71ff9e1dbj32rcv5glubc@google.com\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140427T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140330T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140511T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140518T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140727T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140525T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140629T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140309T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140914T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140223T110000\r\n" +
+		"DTSTAMP:20140520T181309Z\r\n" +
+		"LOCATION:\r\n" +
+		"DESCRIPTION:\r\n" +
+		"STATUS:CONFIRMED\r\n" +
+		"SEQUENCE:0\r\n" +
+		"SUMMARY:Test Event\r\n" +
+		"LAST-MODIFIED:20140131T183222Z\r\n" +
+		"DTSTART;TZID=America/Los_Angeles:20140209T110000\r\n" +
+		"CREATED:20140131T183222Z\r\n" +
+		"RRULE:FREQ=WEEKLY;BYDAY=SU\r\n" +
+		"TRANSP:OPAQUE\r\n" +
+		"END:VEVENT\r\n" +
+		"END:VCALENDAR\n" +
+		"";
+		var cal = parse_calendar(ical);
+
+		expect(cal.events()[0].start()).toEqual(new Date("2014-02-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-02-09T10:00:00-0800"))).toEqual(new Date("2014-02-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-23T10:00:00-0700"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-26T02:00:00-0800"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+	});
+	it("Should parse with Google timezone def", function () {
+
+		var ical = 
+		"BEGIN:VCALENDAR\n" +
+		"PRODID:-//Google Inc//Google Calendar 70.9054//EN\n" +
+		"VERSION:2.0\n" +
+		"CALSCALE:GREGORIAN\n" +
+		"METHOD:PUBLISH\n" +
+		"X-WR-CALNAME:test cal for z-adams spec\n" +
+		"X-WR-TIMEZONE:America/Los_Angeles\n" +
+		"BEGIN:VTIMEZONE\n" +
+		"TZID:America/Los_Angeles\n" +
+		"X-LIC-LOCATION:America/Los_Angeles\n" +
+		"BEGIN:DAYLIGHT\n" +
+		"TZOFFSETFROM:-0800\n" +
+		"TZOFFSETTO:-0700\n" +
+		"TZNAME:PDT\n" +
+		"DTSTART:19700308T020000\n" +
+		"RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU\n" +
+		"END:DAYLIGHT\n" +
+		"BEGIN:STANDARD\n" +
+		"TZOFFSETFROM:-0700\n" +
+		"TZOFFSETTO:-0800\n" +
+		"TZNAME:PST\n" +
+		"DTSTART:19701101T020000\n" +
+		"RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU\n" +
+		"END:STANDARD\n" +
+		"END:VTIMEZONE\n" +
+		"BEGIN:VEVENT\r\n" +
+		"DTSTART;TZID=America/Los_Angeles:20140209T110000\r\n" +
+		"DTEND;TZID=America/Los_Angeles:20140209T170000\r\n" +
+		"RRULE:FREQ=WEEKLY;BYDAY=SU\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140518T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140511T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140914T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140629T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140525T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140427T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140309T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140727T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140330T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140223T110000\r\n" +
+		"DTSTAMP:20140520T181309Z\r\n" +
+		"UID:uvqhl71ff9e1dbj32rcv5glubc@google.com\r\n" +
+		"CREATED:20140131T183222Z\r\n" +
+		"DESCRIPTION:\r\n" +
+		"LAST-MODIFIED:20140131T183222Z\r\n" +
+		"LOCATION:\r\n" +
+		"SEQUENCE:0\r\n" +
+		"STATUS:CONFIRMED\r\n" +
+		"SUMMARY:Test Event\r\n" +
+		"TRANSP:OPAQUE\r\n" +
+		"END:VEVENT\r\n" +
+		"END:VCALENDAR\n" +
+		"";
+		var cal = parse_calendar(ical);
+
+		expect(cal.events()[0].start()).toEqual(new Date("2014-02-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-02-09T10:00:00-0800"))).toEqual(new Date("2014-02-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-23T10:00:00-0700"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-26T02:00:00-0800"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+	});
+	it("Should parse with Apple timezone def", function () {
+
+		var ical = 
+		"BEGIN:VCALENDAR\r\n" +
+		"VERSION:2.0\r\n" +
+		"X-WR-CALNAME:test cal for z-adams spec\r\n" +
+		"X-APPLE-CALENDAR-COLOR:#882F00FF\r\n" +
+		"BEGIN:VTIMEZONE\r\n" +
+		"TZID:America/Los_Angeles\r\n" +
+		"X-LIC-LOCATION:America/Los_Angeles\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:18831118T120702\r\n" +
+		"RDATE;VALUE=DATE-TIME:18831118T120702\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0752\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19180331T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19190330T100000Z;BYDAY=-1SU;BYMONTH=3\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19181027T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19191026T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19420209T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19420209T020000\r\n" +
+		"TZNAME:PWT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19450814T160000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19450814T160000\r\n" +
+		"TZNAME:PPT\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19450930T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19450930T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19490101T020000\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19460101T000000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19460101T000000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19670101T000000\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19480314T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19480314T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19740106T020000\r\n" +
+		"RDATE;VALUE=DATE-TIME:19750223T020000\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19500430T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19660424T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19500924T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19610924T090000Z;BYDAY=-1SU;BYMONTH=9\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19621028T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19661030T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19670430T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19730429T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:19671029T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=20061029T090000Z;BYDAY=-1SU;BYMONTH=10\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19760425T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=19860427T100000Z;BYDAY=-1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:19870405T020000\r\n" +
+		"RRULE:FREQ=YEARLY;UNTIL=20060402T100000Z;BYDAY=1SU;BYMONTH=4\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:DAYLIGHT\r\n" +
+		"DTSTART:20070311T020000\r\n" +
+		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n" +
+		"TZNAME:PDT\r\n" +
+		"TZOFFSETFROM:-0800\r\n" +
+		"TZOFFSETTO:-0700\r\n" +
+		"END:DAYLIGHT\r\n" +
+		"BEGIN:STANDARD\r\n" +
+		"DTSTART:20071104T020000\r\n" +
+		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n" +
+		"TZNAME:PST\r\n" +
+		"TZOFFSETFROM:-0700\r\n" +
+		"TZOFFSETTO:-0800\r\n" +
+		"END:STANDARD\r\n" +
+		"END:VTIMEZONE\r\n" +
+		"BEGIN:VEVENT\r\n" +
+		"DTEND;TZID=America/Los_Angeles:20140109T170000\r\n" +
+		"UID:uvqhl71ff9e1dbj32rcv5glubc@google.com\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140427T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140330T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140511T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140518T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140727T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140525T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140629T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140309T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140914T110000\r\n" +
+		"EXDATE;TZID=America/Los_Angeles:20140223T110000\r\n" +
+		"DTSTAMP:20140520T181309Z\r\n" +
+		"LOCATION:\r\n" +
+		"DESCRIPTION:\r\n" +
+		"STATUS:CONFIRMED\r\n" +
+		"SEQUENCE:0\r\n" +
+		"SUMMARY:Test Event\r\n" +
+		"LAST-MODIFIED:20140131T183222Z\r\n" +
+		"DTSTART;TZID=America/Los_Angeles:20140109T110000\r\n" +
+		"CREATED:20140131T183222Z\r\n" +
+		"RRULE:FREQ=WEEKLY;BYDAY=SU\r\n" +
+		"TRANSP:OPAQUE\r\n" +
+		"END:VEVENT\r\n" +
+		"END:VCALENDAR\n" +
+		"";
+		var cal = parse_calendar(ical);
+
+		expect(cal.events()[0].start()).toEqual(new Date("2014-01-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-02-08T10:00:00-0800"))).toEqual(new Date("2014-02-09T11:00:00-0800"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-23T10:00:00-0700"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+		expect(cal.events()[0].rrule().next(new Date("2014-10-25T02:00:00-0800"))).toEqual(new Date("2014-10-26T11:00:00-0700"));
+	});
+})
 
 xdescribe("Should pass all kanzaki.com rrule examples", function () {
 [
