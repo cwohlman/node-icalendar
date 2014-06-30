@@ -252,5 +252,24 @@ describe("iCalendar.parse", function() {
         expect(new Date(2011,10,9,17,32,16)).toEqual(vevent.getPropertyValue('TRIGGER'));
 
     });
+
+    it('parses all day events with timezone', function () {
+        var cal = parse_calendar(
+            'BEGIN:VCALENDAR\r\n'+
+            'PRODID:-//Bobs Software Emporium//NONSGML Bobs Calendar//EN\r\n'+
+            'VERSION:2.0\r\n'+
+            'X-WR-TIMEZONE:America/Los_Angeles\r\n' +
+            'BEGIN:VEVENT\r\n'+
+            'DTSTAMP:20111202T165900\r\n'+
+            'UID:testuid@someotherplace.com\r\n'+
+            'DTSTART;VALUE=Date:20110101\r\n'+
+            'DTEND;VALUE=Date:20110102\r\n'+
+            'SUMMARY:Some Event\r\n'+
+            'DESCRIPTION:Something will happen\r\n'+
+            'END:VEVENT\r\n'+
+            'END:VCALENDAR\r\n');
+        var vevent = cal.getComponents('VEVENT')[0];
+        expect(vevent.start()).toEqual(new Date("2011-01-01T00:00:00-08:00"));
+    });
 });
 
