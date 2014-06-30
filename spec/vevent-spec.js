@@ -92,8 +92,6 @@ describe('VEvent objects', function() {
         vevent.addProperty('DTSTART', new Date(2011,11,1,5,0,0));
         vevent.addProperty('RRULE', 'FREQ=MONTHLY;COUNT=3');
 
-        console.log(vevent.getReservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z")))
-
         expect(vevent.inTimeRange(new Date(2011,10,1), new Date(2011,11,1)))
                 .toEqual(false);
         expect(vevent.inTimeRange(new Date(2011,11,1), new Date(2011,11,2)))
