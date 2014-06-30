@@ -64,7 +64,28 @@ describe("iCalendar API", function () {
 				'END:VCALENDAR\r\n');
 			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"));
 			expect(reservations).toBeTruthy();
+			console.log("Reservations:",reservations);
 			expect(reservations.length).toBe(2); // Note default reservations duration is 1 year
+		});
+		it("reservations property should return reservations for a multi-day event.", function () {
+			var cal = icalendar.parse_calendar(
+				'BEGIN:VCALENDAR\r\n'+
+				'PRODID:-//Bobs Software Emporium//NONSGML Bobs Calendar//EN\r\n'+
+				'VERSION:2.0\r\n'+
+				'BEGIN:VEVENT\r\n'+
+				'DTSTAMP:20111202T165900\r\n'+
+				'UID:testuid@someotherplace.com\r\n'+
+				'DTSTART:20110101T100000Z\r\n'+
+				'DTEND:20110102T200000Z\r\n'+
+				'SUMMARY:Some Event\r\n'+
+				'DESCRIPTION:Something will happen\r\n'+
+				'END:VEVENT\r\n'+
+				'END:VCALENDAR\r\n');
+			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"));
+			expect(reservations).toBeTruthy();
+			expect(reservations.length).toBe(2); // Note default reservations duration is 1 year
+			expect(reservations[0].start.time).toEqual(10 * 60); // Note default reservations duration is 1 year
+			expect(reservations[0].end.time).toEqual(24 * 60 - 1); // Note default reservations duration is 1 year
 		});
 		it("reservations property should handle multiple and recuring events", function () {
 			var cal = icalendar.parse_calendar(
