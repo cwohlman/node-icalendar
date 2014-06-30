@@ -104,6 +104,7 @@ describe("iCalendar API", function () {
 			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"));
 			expect(reservations).toBeTruthy();
 			expect(reservations.length).toBe(1); // Note default reservations duration is 1 year
+			expect(reservations[0].end.time).toBe(23 * 60 + 59); // Note default reservations duration is 1 year
 		});
 		it("reservations property should handle multiple and recuring events", function () {
 			var cal = icalendar.parse_calendar(
