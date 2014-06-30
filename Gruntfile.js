@@ -7,10 +7,15 @@ module.exports = function (grunt) {
     jasmine_node: {
       projectRoot: "."
     }
+    , watch: {
+      files: ['**/*.js']
+      , tasks: ['default']
+    }
   });
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-jasmine-node');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
   grunt.registerTask('default', ['jasmine_node']);
