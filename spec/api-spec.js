@@ -17,7 +17,7 @@ describe("iCalendar API", function () {
 	            'DESCRIPTION:Something will happen\r\n'+
 	            'END:VEVENT\r\n'+
 	            'END:VCALENDAR\r\n');
-			var reservations = cal.reservations();
+			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"));
 			expect(reservations).toBeTruthy();
 			expect(reservations.length).toBe(1);
 		});
@@ -36,7 +36,7 @@ describe("iCalendar API", function () {
 	            'DESCRIPTION:Something will happen\r\n'+
 	            'END:VEVENT\r\n'+
 	            'END:VCALENDAR\r\n');
-			var reservations = cal.reservations();
+			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"));
 			expect(reservations).toBeTruthy();
 			expect(reservations.length).toBe(12); // Note default reservations duration is 1 year
 		});
@@ -62,7 +62,7 @@ describe("iCalendar API", function () {
 	            'DESCRIPTION:Something will happen\r\n'+
 	            'END:VEVENT\r\n'+
 	            'END:VCALENDAR\r\n');
-			var reservations = cal.reservations();
+			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"));
 			expect(reservations).toBeTruthy();
 			expect(reservations.length).toBe(2); // Note default reservations duration is 1 year
 		});
@@ -89,7 +89,7 @@ describe("iCalendar API", function () {
 	            'DESCRIPTION:Something will happen\r\n'+
 	            'END:VEVENT\r\n'+
 	            'END:VCALENDAR\r\n');
-			var reservations = cal.reservations();
+			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"));
 			expect(reservations).toBeTruthy();
 			expect(reservations.length).toBe(13); // Note default reservations duration is 1 year
 		});
@@ -108,8 +108,9 @@ describe("iCalendar API", function () {
 	            'DESCRIPTION:Something will happen\r\n'+
 	            'END:VEVENT\r\n'+
 	            'END:VCALENDAR\r\n');
-			var reservations = cal.reservations("America/Los_Angeles");
+			var reservations = cal.reservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"), "America/Los_Angeles");
 			expect(reservations).toBeTruthy();
+			expect(reservations.length).toBe(12);
 			// expect(reservations[0].date.year).toEqual(2011);
 			// expect(reservations[0].date.month).toEqual(01);
 			expect(reservations[0].date.date).toEqual(01);

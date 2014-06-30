@@ -92,6 +92,8 @@ describe('VEvent objects', function() {
         vevent.addProperty('DTSTART', new Date(2011,11,1,5,0,0));
         vevent.addProperty('RRULE', 'FREQ=MONTHLY;COUNT=3');
 
+        console.log(vevent.getReservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z")))
+
         expect(vevent.inTimeRange(new Date(2011,10,1), new Date(2011,11,1)))
                 .toEqual(false);
         expect(vevent.inTimeRange(new Date(2011,11,1), new Date(2011,11,2)))
@@ -186,7 +188,7 @@ describe('VEvent objects', function() {
             'END:VEVENT\r\n'+
             'END:VCALENDAR\r\n');
         var ev = cal.events()[0];
-        var rv = ev.getReservations()[0];
+        var rv = ev.getReservations(new Date("2011-01-01T00:00:00Z"), new Date("2012-01-01T00:00:00Z"))[0];
         expect(rv.start.valueOf()).toBe(new Date("2011-01-01T10:00:00Z").valueOf());
         expect(rv.end.valueOf()).toBe(new Date("2011-01-01T20:00:00Z").valueOf());
         expect(rv.summary).toBe("Some Event");
